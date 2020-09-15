@@ -17,3 +17,6 @@ app.listen(3000, () => {  // Start listening once DB connection is made
   console.log("Listening on port 3000...");
 });
 
+// Auth Routes
+const authRoute = require("./routes/auth/auth.js")
+app.use("/auth", authRoute);
