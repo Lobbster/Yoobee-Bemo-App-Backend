@@ -38,21 +38,4 @@ router.get("/:id", (req, res, next) => {
   res.status(200).send(req.user);
 });
 
-//update User Info
-router.put("/:id", (req, res, next) => {
-  const id = req.params.id;
-  console.log(`Update request for user ${id} received...`);
-  User.findByIdAndUpdate(req.user.id, req.body).then((user) => {
-    res.send(user);
-  });
-});
-
-//Delete User
-router.delete("/:id", (req, res, next) => {
-  const id = req.params.id;
-  User.findByIdAndDelete(req.user.id).then((user) => {
-    res.status(204).send(user);
-  });
-});
-
 module.exports = router;

@@ -1,18 +1,22 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-  userName: { type: String, required: true },
-  fullName: { type: String, required: true },
+  username: { type: String, required: true },
+  fullname: { type: String, required: true },
   userToken: Number,
-  pin: String,
+  pinCode: String,
   verified: Boolean,
   picture: String,
   balance: Number,
   auth: String,
-  accoutes: Object,
-  locked: (Boolean = false),
-  payments: [{ type: objectId }],
+  accounts: Object,
+  locked: {
+    type: Boolean,
+    default: false
+},
+  payments: [mongoose.Types.ObjectId],
   email: { type: String, required: true },
-});
+},
+{ timestamps: true });
 
 module.exports = mongoose.model("user", UserSchema);
