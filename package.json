@@ -4,13 +4,8 @@
   "description": "Bemo Backend API",
   "main": "server.js",
   "scripts": {
-<<<<<<< HEAD
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js"
-=======
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
->>>>>>> 78e2070... :lock: Add Twilio Authy Utility Functions
   },
   "repository": {
     "type": "git",
