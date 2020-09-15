@@ -10,9 +10,13 @@ const UserSchema = new mongoose.Schema({
   balance: Number,
   auth: String,
   accounts: Object,
-  locked: (Boolean = false),
-  payments: [{ type: objectId }],
+  locked: {
+    type: Boolean,
+    default: false
+},
+  payments: [mongoose.Types.ObjectId],
   email: { type: String, required: true },
-});
+},
+{ timestamps: true });
 
 module.exports = mongoose.model("user", UserSchema);
