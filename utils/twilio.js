@@ -1,4 +1,5 @@
 const authy = require("authy")("2KtdJt55E4AOZBcRhqw5ua6TYDu4DV9X");
+const User = require("../models/User.js");
 
 const registerUser = (email, phone) => {
   return new Promise((resolve, reject) => {
