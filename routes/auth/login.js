@@ -1,30 +1,41 @@
 const passport = require("passport");
 const customStrategy = require("passport-custom");
 const router = require("express").Router();
-const { registerUser } = require("../../utils/twilio.js");
-
-// Auth Tests
-passport.use(
-  "passworless",
-  new customStrategy(function (req, done) {
-    // Find user by phone
-    // Authy id = user.authId
-    done(false);
-  })
-);
+const { sendUserVerify, checkUserVerify } = require("../../utils/twilio.js");
 
 router.get("/", function (req, res) {
-//   registerUser();
+  //   registerUser();
   res.status(405);
   res.send("405 Method Not Allowed");
 });
 
-// Login
+passport.use(
+  "passworless",
+  new customStrategy((req, done) => {
+    checkUserVerify(data.user.userToken, "Code").then((res) => {
+        // If no errors =>
+        if (!res.error) {
+            // Confirm Auth =>
+            done(null, data.user);
+        }
+    });
+  })
+);
+
+router.post("/", function (req, res) {
+  console.log(req.body)
+  sendUserVerify(req.body.phone).then((data) => {
+    res.send(data);
+  })
+});
+
 router.post(
-  "/",
-  passport.authenticate("passworless", { failureRedirect: "/login" }),
+  "/verify",
+  passport.authenticate("passworless", function (req, res) {
+    console.log("Failed Login attempt");
+  }),
   function (req, res) {
-    res.redirect("/");
+    console.log("Successful Login Attempt");
   }
 );
 
