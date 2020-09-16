@@ -1,42 +1,38 @@
 const passport = require("passport");
-const customStrategy = require("passport-custom");
 const router = require("express").Router();
-const { sendUserVerify, checkUserVerify } = require("../../utils/twilio.js");
+const { sendUserVerify } = require("../../utils/twilio.js");
 
-router.get("/", function (req, res) {
-  //   registerUser();
-  res.status(405);
-  res.send("405 Method Not Allowed");
+// If not trying to post then tell the user this method is not allowed.
+router.use("/", function (req, res, next) {
+  if (req.method != "POST" && req.method != "PUT") {
+    return res.send("Method not allowed").status(405);
+  }
+  next();
 });
 
-passport.use(
-  "passworless",
-  new customStrategy((req, done) => {
-    checkUserVerify(data.user.userToken, "Code").then((res) => {
-        // If no errors =>
-        if (!res.error) {
-            // Confirm Auth =>
-            done(null, data.user);
-        }
-    });
-  })
-);
-
+// Start Login Process
 router.post("/", function (req, res) {
-  console.log(req.body)
   sendUserVerify(req.body.phone).then((data) => {
     res.send(data);
-  })
+  });
 });
 
-router.post(
-  "/verify",
-  passport.authenticate("passworless", function (req, res) {
-    console.log("Failed Login attempt");
-  }),
-  function (req, res) {
-    console.log("Successful Login Attempt");
-  }
-);
+// Verify Login Attempt
+router.post("/verify", (req, res, next) => {
+  passport.authenticate("passworless", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return next({ message: "Missing User", error: 400 });
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      return res.redirect("/users");
+    });
+  })(req, res, next);
+});
 
 module.exports = router;
