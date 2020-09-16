@@ -16,6 +16,7 @@ const UserSchema = new mongoose.Schema({
 },
   payments: [mongoose.Types.ObjectId],
   email: { type: String, required: true },
+  phone: { type: String, required: true },
 },
 { timestamps: true });
 

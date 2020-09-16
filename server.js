@@ -12,6 +12,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors());
 dotenv.config();
+const isProduction = false;
 
 passport.serializeUser(function(user, done) {
   done(null, user);

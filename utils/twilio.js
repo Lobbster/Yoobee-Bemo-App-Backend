@@ -5,6 +5,7 @@ const registerUser = (email, phone) => {
   return new Promise((resolve, reject) => {
     authy.register_user(email, phone, "64", false, function (err, regRes) {
       // Save code against the user
+      console.log(phone)
       authy.request_sms(regRes.user.id, function (err, res) {
         resolve(regRes);
       });
