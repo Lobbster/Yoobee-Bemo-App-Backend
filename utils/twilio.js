@@ -8,7 +8,7 @@ const registerUser = (email, phone) => {
   return new Promise((resolve, reject) => {
     // Using Twilio Authy register a user, NZ numbers only.
     authy.register_user(email, phone, "64", false, function (err, user) {
-      authy.request_sms(regRes.user.id, function (err, res) {
+      authy.request_sms(user.user.id, function (err, res) {
         // Return the Twilio user object (Inlcudes userToken / authyId)
         resolve(user);
       });
