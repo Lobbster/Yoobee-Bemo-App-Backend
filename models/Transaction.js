@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 const TransactionSchema = new mongoose.Schema(
   {
-    reciver: { type: Object, required: true },
-    sender: { type: Object, required: true },
+    source: { type: Object, required: true },
+    destination: { type: Object, required: true },
     status: {
       type: String,
       enum: ["pending", "resolved", "failed", "frozen"],
@@ -16,8 +16,8 @@ const TransactionSchema = new mongoose.Schema(
       required: true 
     },
     resolvedTime: Date,
-    reciverIp: String,
-    senderIp: String,
+    sourceIp: String,
+    destinationIp: String,
     flag: {
       type: String,
       enum: ["fraud", "validate", "error"]
