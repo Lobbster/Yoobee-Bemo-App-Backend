@@ -6,22 +6,22 @@ const TransactionSchema = new mongoose.Schema(
     destination: { type: Object, required: true },
     status: {
       type: String,
-      enum: ["pending", "resolved", "failed", "frozen"],
-      default: "pending"
+      enum: ["RESOLVED", "FAILED", "ISF"],
+      required: true
     },
     amount: { 
       type: Number, 
-      min: [50, 'Sorry, payments must be at least $0.50'],
-      max: [50000, 'Sorry, the max allowed transaction at this time is $500'],
+      min: [50, 'MIN PAYMENT AMOUNT OF 0.50'],
+      max: [50000, 'MAX PAYMENT AMOUNT OF 500'],
       required: true 
+    },
+    payment: {
+      type: Object,
+      required: true
     },
     resolvedTime: Date,
     sourceIp: String,
-    destinationIp: String,
-    flag: {
-      type: String,
-      enum: ["fraud", "validate", "error"]
-    }
+    destinationIp: String
   },
   { timestamps: true }
 );

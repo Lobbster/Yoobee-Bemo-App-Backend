@@ -18,52 +18,23 @@ router.param("id", (req, res, next, id) => {
     .catch(next);
 });
 
-// router.post("/", (req, res, next) => {
-//   const payment = new Payment(req.body);
-//   payment.save().then((payment) => {
-//     const transaction = new Transaction({
-//       source: source,
-//       destination: destination,
-//       amount: paymentResult.amount,
-//     });
+// Create a payment
+router.post("/", (req, res, next) => {
+  const payment = new Payment(req.body);
+  payment.save().then((payment) => {
+    return res.status(201).send(payment)
+  }).catch(next)
+});
 
-//     transaction.save().then((transactionResult) => {
-//       return res.status(201).send({
-//         amount: paymentResult.amount,
-//         status: paymentResult.status,
-//         transaction: transactionResult,
-//       });
-//     }).catch(next)
-//   }).catch(next)
-// });
+// Confirm a payment
+router.post("/confirm", (req, res, next) => {
+  createTransaction(req.body.payment).then((transaction) => {
+    if (transaction.error) {
+      return next(transaction.error)
+    }
 
-// Start Payment
-// router.post("/", (req, res, next) => {
-//   const payment = new Payment(req.body);
-//   payment
-//     .save()
-//     .then((paymentResult) => {
-//       const source = User.findOne({ _id: paymentResult.source }).then((res) => {
-//         return res
-//       });
-//       const destination = User.findOne({ _id: paymentResult.destination }).then((res) => {
-//         return res
-//       });
-
-//       const transaction = new Transaction({
-//         source: source,
-//         destination: destination,
-//         amount: paymentResult.amount,
-//       });
-//       transaction.save().then((transactionResult) => {
-//         return res.status(201).send({
-//           amount: paymentResult.amount,
-//           status: paymentResult.status,
-//           transaction: transactionResult,
-//         });
-//       });
-//     })
-//     .catch(next);
-// });
+    return res.status(201).send(transaction);
+  }).catch(next)
+});
 
 module.exports = router;

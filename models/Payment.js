@@ -6,8 +6,8 @@ const PaymentSchema = new mongoose.Schema(
     destination: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true},
     status: {
       type: String,
-      enum: ["pending", "resolved", "failed", "frozen"],
-      default: "pending"
+      enum: ["PENDING", "RESOLVED", "FAILED", "FROZEN"],
+      default: "PENDING"
     },
     transaction: { type: mongoose.Schema.Types.ObjectId, ref: "Transaction"},
     amount: { 
@@ -16,7 +16,7 @@ const PaymentSchema = new mongoose.Schema(
       max: [50000, 'Sorry, the max allowed payment at this time is $500'],
       required: true 
     },
-    paymentType: { type: String, enum: ["bank", "credit", "bemo"], required: true}
+    paymentType: { type: String, enum: ["BEMO", "INCOMING", "OUTGOING"], required: true}
   },
   { timestamps: true }
 );
