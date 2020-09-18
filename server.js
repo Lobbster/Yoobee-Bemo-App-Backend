@@ -9,18 +9,10 @@ const http = require("http").createServer(app);
 const io = require("socket.io")(http);
 app.io = io;
 
+require("./utils/chat/socket.js")(io);
 
-io.on("connection", (socket) => {
-  console.log("Connect to socket made");
-});
-io.on('disconnect', (socket) => {
-  console.log("A user has disconnected");
-  // console.log(socket); 
-});
 
-io.on("msg", (msg) => {
-  console.log(msg);
-});
+
 
 // App Setup  ---------------------------------------------
 
@@ -91,9 +83,9 @@ app.use((req, res, next) => {
 //   });
 // });
 
-  
+
 // Server -------------------------------------------------
-http.listen(3000, () => { 
+http.listen(3000, () => {
   console.log("Listening on port 3000...");
 });
 

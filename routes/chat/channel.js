@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { ensureAuthenticated } = require("../../utils/auth.js");
-const Room = require("../../models/Room.js");
+const Channel = require("../../models/Channel.js");
 
 // If not trying to post then tell the user this method is not allowed.
 router.use("/", function (req, res, next) {
@@ -13,13 +13,13 @@ router.use("/", function (req, res, next) {
 
 // List all rooms / FOR DEVELOPMENT
 router.get("/", (req, res, next) => {
-    Room.find({}, (err, data) => {
-        if (!err) {
-            return res.send(data).status(200);
-        } else {
-            return next(err);
-        }
-    })
+  Channel.find({}, (err, data) => {
+    if (!err) {
+      return res.send(data).status(200);
+    } else {
+      return next(err);
+    }
+  })
 });
 
 // router.post("/", ensureAuthenticated, (req, res, next) => {
@@ -29,10 +29,10 @@ router.post("/", (req, res, next) => {
 
   if (req.body.recipient) {
     users.push(req.body.recipient);
-    const room = new Room({ users: users });
+    const channel = new Channel({ users: users });
     console.log(users);
 
-    room
+    channel
       .save()
       .then((result) => {
         // If success return the new room

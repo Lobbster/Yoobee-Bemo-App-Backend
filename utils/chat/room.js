@@ -1,4 +1,4 @@
-const http = require("../server.js");
+const http = require("../../server.js");
 const Room = require("../../models/Room.js");
 
 // Check if room exists in database
