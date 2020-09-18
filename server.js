@@ -4,7 +4,23 @@ const passport = require('passport');
 const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const session = require('express-session')
+const session = require("express-session");
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
+app.io = io;
+
+
+io.on("connection", (socket) => {
+  console.log("Connect to socket made");
+});
+io.on('disconnect', (socket) => {
+  console.log("A user has disconnected");
+  // console.log(socket); 
+});
+
+io.on("msg", (msg) => {
+  console.log(msg);
+});
 
 // App Setup  ---------------------------------------------
 
@@ -54,29 +70,34 @@ app.use((req, res, next) => {
 
 // Error Checking -----------------------------------------
 
-app.use((req, res, next) => {
-  const error = new Error("Errors are happening, try again...");
-  error.status = 404;
-  next(error);
-});
+// app.use((req, res, next) => {
+//   const error = new Error("Error 404. Not Found");
+//   error.status = 404;
+//   next(error);
+// });
 
-app.use((err, req, res, next) => {
-  if (!isProduction) {
-    console.log(err.stack);
-  }
+// app.use((err, req, res, next) => {
+//   if (!isProduction) {
+//     console.log(err.stack);
+//   }
 
-  res.status(err.status || 500);
+//   res.status(err.status || 500);
 
-  res.json({
-    errors: {
-      message: err.message,
-      error: err,
-    },
-  });
-});
+//   res.json({
+//     errors: {
+//       message: err.message,
+//       error: err,
+//     },
+//   });
+// });
 
   
 // Server -------------------------------------------------
-app.listen(3000, () => { 
+http.listen(3000, () => { 
   console.log("Listening on port 3000...");
 });
+
+
+
+
+module.exports = http;
