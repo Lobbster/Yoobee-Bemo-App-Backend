@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { ensureAuthenticated } = require("../../utils/auth.js");
 const Channel = require("../../models/Channel.js");
+const User = require("../../models/User.js");
 
 // If not trying to post then tell the user this method is not allowed.
 router.use("/", function (req, res, next) {
@@ -11,15 +12,14 @@ router.use("/", function (req, res, next) {
 });
 
 
-// List all rooms / FOR DEVELOPMENT
-router.get("/", (req, res, next) => {
-  Channel.find({}, (err, data) => {
-    if (!err) {
-      return res.send(data).status(200);
-    } else {
-      return next(err);
-    }
-  })
+// List all rooms the user is privy to
+router.get("/", ensureAuthenticated, (req, res, next) => {
+  let user = req.user;
+  if (req.user.channels) {
+    return res.send(user.channels).status(200);
+  } else {
+    return res.send([]).status(200);
+  }
 });
 
 // router.post("/", ensureAuthenticated, (req, res, next) => {
