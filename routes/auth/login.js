@@ -30,7 +30,7 @@ router.post("/verify", (req, res, next) => {
       if (err) {
         return next(err);
       }
-      return res.redirect("/users");
+      return res.status(200).send({success: true});
     });
   })(req, res, next);
 });
