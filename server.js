@@ -10,7 +10,10 @@ const session = require("express-session");
 
 app.use(express.static("public"));
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:8080',
+  credentials : true
+ }));
 dotenv.config();
 const isProduction = false;
 // Passport Config
@@ -48,6 +51,9 @@ app.use("/payments", require("./routes/payments/index.js"));
 // --------------------------------------------------------
 //                      DEV ONLY
 app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');    
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');   
+  res.setHeader('Access-Control-Allow-Credentials', 'true');   
   console.log(req.method + " request just came in...");
   next();
 });
