@@ -8,6 +8,7 @@ const session = require("express-session");
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
 app.io = io;
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
 
 require("./utils/chat/socket.js")(io);
 
@@ -23,6 +24,10 @@ dotenv.config();
 const isProduction = false;
 // Passport Config
 require('./utils/passport.js')(passport);
+
+io.use(wrap(session({ secret: process.env.SESSION_SECRET })));
+io.use(wrap(passport.initialize()));
+io.use(wrap(passport.session()));
 
 // Express Session ------------------------------------------
 app.use(session({
@@ -42,6 +47,17 @@ mongoose.connect(process.env.MONGODB_URI, {
   useUnifiedTopology: true,
   useFindAndModify: false,
 });
+
+// Socket -------------------------------------------------
+
+io.use((socket, next) => {
+  if (socket.request.user) {
+    next();
+  } else {
+    next(new Error('unauthorized'));
+  }
+});
+
 
 // Routes -------------------------------------------------
 
