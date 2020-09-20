@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const passport = require('passport');
+const passport = require("passport");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
@@ -13,28 +13,28 @@ const wrap = middleware => (socket, next) => middleware(socket.request, {}, next
 require("./utils/chat/socket.js")(io);
 
 
-
-
 // App Setup  ---------------------------------------------
 
-app.use(express.static('public'));
+app.use(express.static("public"));
 app.use(express.json());
 app.use(cors());
 dotenv.config();
 const isProduction = false;
 // Passport Config
-require('./utils/passport.js')(passport);
+require("./utils/passport.js")(passport);
 
 io.use(wrap(session({ secret: process.env.SESSION_SECRET })));
 io.use(wrap(passport.initialize()));
 io.use(wrap(passport.session()));
 
 // Express Session ------------------------------------------
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // Passport middleware
 app.use(passport.initialize());
@@ -65,7 +65,8 @@ app.use('/', require('./routes/index.js'));
 app.use('/auth', require('./routes/auth/auth.js'));
 app.use('/users', require('./routes/users.js'));
 app.use('/chat', require('./routes/chat/index.js'));
-
+app.use("/user", require("./routes/user/index.js"));
+app.use("/payments", require("./routes/payments/index.js"));
 
 // --------------------------------------------------------
 //                      DEV ONLY
@@ -74,7 +75,6 @@ app.use((req, res, next) => {
   next();
 });
 // --------------------------------------------------------
-
 
 // Error Checking -----------------------------------------
 
