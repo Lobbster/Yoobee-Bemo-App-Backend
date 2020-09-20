@@ -19,6 +19,7 @@ router.post("/", function (req, res) {
 
 // Verify Login Attempt
 router.post("/verify", (req, res, next) => {
+  console.log(req.body);
   passport.authenticate("passworless", (err, user, info) => {
     if (err) {
       return next(err);
