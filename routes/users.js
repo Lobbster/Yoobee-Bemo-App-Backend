@@ -18,15 +18,15 @@ router.param("id", (req, res, next, id) => {
 // ----------------------------------------------------------------
 // DEACTIVATED AS WE CURRENTLY HAVE NO NEED TO LIST USERS
 
-// router.get("/", ensureAuthenticated, (req, res, next) => {
-//   console.log(req.user)
-//   User.find({})
-//     .sort({ createdAt: "desc" })
-//     .then((users) => {
-//       return res.status(200).send(users);
-//     })
-//     .catch(next);
-// });
+router.get("/", (req, res, next) => {
+  console.log(req.user)
+  User.find({})
+    .sort({ createdAt: "desc" })
+    .then((users) => {
+      return res.status(200).send(users);
+    })
+    .catch(next);
+});
 
 // ----------------------------------------------------------------
 // MOVED TO AUTH / SIGNUP

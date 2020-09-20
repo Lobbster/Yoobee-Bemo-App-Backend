@@ -5,6 +5,13 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const session = require("express-session");
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
+app.io = io;
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+
+require("./utils/chat/socket.js")(io);
+
 
 // App Setup  ---------------------------------------------
 
@@ -15,6 +22,10 @@ dotenv.config();
 const isProduction = false;
 // Passport Config
 require("./utils/passport.js")(passport);
+
+io.use(wrap(session({ secret: process.env.SESSION_SECRET })));
+io.use(wrap(passport.initialize()));
+io.use(wrap(passport.session()));
 
 // Express Session ------------------------------------------
 app.use(
@@ -37,11 +48,23 @@ mongoose.connect(process.env.MONGODB_URI, {
   useFindAndModify: false,
 });
 
+// Socket -------------------------------------------------
+
+io.use((socket, next) => {
+  if (socket.request.user) {
+    next();
+  } else {
+    next(new Error('unauthorized'));
+  }
+});
+
+
 // Routes -------------------------------------------------
 
-app.use("/", require("./routes/index.js"));
-app.use("/auth", require("./routes/auth/auth.js"));
-app.use("/users", require("./routes/users.js"));
+app.use('/', require('./routes/index.js'));
+app.use('/auth', require('./routes/auth/auth.js'));
+app.use('/users', require('./routes/users.js'));
+app.use('/chat', require('./routes/chat/index.js'));
 app.use("/user", require("./routes/user/index.js"));
 app.use("/payments", require("./routes/payments/index.js"));
 
@@ -55,28 +78,34 @@ app.use((req, res, next) => {
 
 // Error Checking -----------------------------------------
 
-app.use((req, res, next) => {
-  const error = new Error("Errors are happening, try again...");
-  error.status = 404;
-  next(error);
-});
+// app.use((req, res, next) => {
+//   const error = new Error("Error 404. Not Found");
+//   error.status = 404;
+//   next(error);
+// });
 
-app.use((err, req, res, next) => {
-  if (!isProduction) {
-    console.log(err.stack);
-  }
+// app.use((err, req, res, next) => {
+//   if (!isProduction) {
+//     console.log(err.stack);
+//   }
 
-  res.status(err.status || 500);
+//   res.status(err.status || 500);
 
-  res.json({
-    errors: {
-      message: err.message,
-      error: err,
-    },
-  });
-});
+//   res.json({
+//     errors: {
+//       message: err.message,
+//       error: err,
+//     },
+//   });
+// });
+
 
 // Server -------------------------------------------------
-app.listen(3000, () => {
+http.listen(3000, () => {
   console.log("Listening on port 3000...");
 });
+
+
+
+
+module.exports = http;
