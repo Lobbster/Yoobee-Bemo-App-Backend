@@ -8,9 +8,9 @@ module.exports = function (passport) {
     "passworless",
     new customStrategy((req, done) => {
       // Check if the request includes a code and userId
-      if (req.body.code && req.body.userId) {
+      if (req.body.phone && req.body.code) {
         // Run the twilio CheckUserVerify utility
-        checkUserVerify(req.body.userId, req.body.code)
+        checkUserVerify(req.body.phone, req.body.code)
           .then((verify) => {
             // If no errors and the vrification was successful
             if (!verify.error && verify.response.success == "true") {

@@ -1,27 +1,29 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const passport = require('passport');
+const passport = require("passport");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const session = require('express-session')
+const session = require("express-session");
 
 // App Setup  ---------------------------------------------
 
-app.use(express.static('public'));
+app.use(express.static("public"));
 app.use(express.json());
 app.use(cors());
 dotenv.config();
 const isProduction = false;
 // Passport Config
-require('./utils/passport.js')(passport);
+require("./utils/passport.js")(passport);
 
 // Express Session ------------------------------------------
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // Passport middleware
 app.use(passport.initialize());
@@ -37,10 +39,11 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Routes -------------------------------------------------
 
-app.use('/', require('./routes/index.js'));
-app.use('/auth', require('./routes/auth/auth.js'));
-app.use('/users', require('./routes/users.js'));
-
+app.use("/", require("./routes/index.js"));
+app.use("/auth", require("./routes/auth/auth.js"));
+app.use("/users", require("./routes/users.js"));
+app.use("/user", require("./routes/user/index.js"));
+app.use("/payments", require("./routes/payments/index.js"));
 
 // --------------------------------------------------------
 //                      DEV ONLY
@@ -49,7 +52,6 @@ app.use((req, res, next) => {
   next();
 });
 // --------------------------------------------------------
-
 
 // Error Checking -----------------------------------------
 
@@ -74,8 +76,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-  
 // Server -------------------------------------------------
-app.listen(3000, () => { 
+app.listen(3000, () => {
   console.log("Listening on port 3000...");
 });
