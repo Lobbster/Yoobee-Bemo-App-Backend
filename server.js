@@ -54,13 +54,13 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Socket -------------------------------------------------
 
-io.use((socket, next) => {
-  if (socket.request.user) {
-    next();
-  } else {
-    next(new Error('unauthorized'));
-  }
-});
+// io.use((socket, next) => {
+//   if (socket.request.user) {
+//     next();
+//   } else {
+//     next(new Error('unauthorized'));
+//   }
+// });
 
 
 // Routes -------------------------------------------------
