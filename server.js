@@ -26,22 +26,23 @@ const isProduction = false;
 // Passport Config
 require("./utils/passport.js")(passport);
 
-io.use(wrap(session({ secret: process.env.SESSION_SECRET })));
-io.use(wrap(passport.initialize()));
-io.use(wrap(passport.session()));
-
 // Express Session ------------------------------------------
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+const userSession = session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+});
+const initPassport = passport.initialize();
+const initpassportSession = passport.session();
+
+app.use(userSession);
 
 // Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(initPassport);
+app.use(initpassportSession);
+io.use(wrap(userSession));
+io.use(wrap(initPassport));
+io.use(wrap(initpassportSession));
 
 // Mongoose Connection ------------------------------------
 

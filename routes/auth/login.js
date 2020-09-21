@@ -13,6 +13,7 @@ router.use("/", function (req, res, next) {
 // Start Login Process
 router.post("/", function (req, res) {
   sendUserVerify(req.body.phone).then((data) => {
+    console.log(data)
     res.send(data);
   });
 });

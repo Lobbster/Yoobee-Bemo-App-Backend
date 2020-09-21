@@ -28,14 +28,15 @@ const socket = (io) => {
 
     //   Store the current logged in passport user
       let currentUser = socket.request.user;
+      // console.log(socket.request.user);
 
       Channel.findOne({ _id: channel }, (err, dbChannel) => {
         if (!err) {
             if (dbChannel) {
-                if (dbChannel.users.includes(currentUser._id)) {
+                if (dbChannel.members.includes(currentUser._id)) {
                     console.log(dbChannel);
                     let msgHistory =  dbChannel.messages || [];
-                    io.to(channel).emit("msgHistory", msgHistory);
+                    io.to(channel).emit("channel", { id: channel, msgHistory: msgHistory });
                 } else {
                     io.to(channel).emit(
                         "error",
@@ -51,7 +52,7 @@ const socket = (io) => {
         } else {
           io.to(channel).emit(
             "error",
-            "Error loading message history. Please retry."
+            "Error loading chat. Please retry."
           );
         }
       });
@@ -62,12 +63,16 @@ const socket = (io) => {
     // Listen for chatMessage
     socket.on("chatMessage", (msg) => {
       // const user = getCurrentUser(socket.id);
-      io.to("room1").emit("message", `${msg}`);
+      io.to(msg.channel).emit("message", msg.body);
     });
 
     socket.on("disconnect", () => {
       console.log("A user has disconnected");
     });
+
+    // const session = socket.request.session;
+    // session.socketId = socket.id;
+    // session.save();
   });
 };
 

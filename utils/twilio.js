@@ -27,6 +27,7 @@ const sendUserVerify = (phone) => {
         // If the phone number is registered send verification
         authy.request_sms(user.userToken, function (err, res) {
           // Return the response (includes sms status and other info)
+          console.log(err)
           resolve(res);
         });
       }
