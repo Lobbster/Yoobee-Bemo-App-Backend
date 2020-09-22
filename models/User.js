@@ -10,6 +10,7 @@ const UserSchema = new mongoose.Schema({
   balance: Number,
   auth: String,
   accounts: Object,
+  channels: [{ type: mongoose.Types.ObjectId, ref: 'Channel' }],
   locked: {
     type: Boolean,
     default: false

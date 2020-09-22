@@ -10,7 +10,7 @@ const io = require("socket.io")(http);
 app.io = io;
 const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
 
-require("./utils/chat/socket.js")(io);
+require("./socket")(io);
 
 
 // App Setup  ---------------------------------------------
