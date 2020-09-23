@@ -1,5 +1,14 @@
 const Channel = require("../models/Channel.js");
 
+/**
+ * Create and save a new message
+ * Then emmit that message to that channel
+ * 
+ * @param { Object } socket - socket.io instance
+ * @param { Object } request - request body object
+ * @typedef {{ channel: objectId, content: string, contentType: string }}
+ */
+
 const newMessage = async (socket, request) => {
     const channel = await Channel.findOne(request.channel._id)
 
