@@ -18,23 +18,29 @@ router.param("id", (req, res, next, id) => {
 // ----------------------------------------------------------------
 // DEACTIVATED AS WE CURRENTLY HAVE NO NEED TO LIST USERS
 
-// router.get("/", ensureAuthenticated, (req, res, next) => {
-//   console.log(req.user)
-//   User.find({})
-//     .sort({ createdAt: "desc" })
-//     .then((users) => {
-//       return res.status(200).send(users);
-//     })
-//     .catch(next);
-// });
+router.get("/", (req, res, next) => {
+  console.log(req.user)
+  User.find({})
+    .sort({ createdAt: "desc" })
+    .then((users) => {
+      return res.status(200).send(users);
+    })
+    .catch(next);
+});
 
 // ----------------------------------------------------------------
 // MOVED TO AUTH / SIGNUP
 
-//Post Request
+// Post Request
 // router.post("/", (req, res) => {
 //   const user = new User(req.body);
 //   user.save().then((result) => {
+//     return res.status(201).send(result);
+//   });
+// });
+
+// router.post("/transaction", (req, res) => {
+//   transferFunds(req.body.amount, req.body.destination).then((result) => {
 //     return res.status(201).send(result);
 //   });
 // });

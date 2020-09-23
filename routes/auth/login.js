@@ -13,12 +13,14 @@ router.use("/", function (req, res, next) {
 // Start Login Process
 router.post("/", function (req, res) {
   sendUserVerify(req.body.phone).then((data) => {
+    console.log(data)
     res.send(data);
   });
 });
 
 // Verify Login Attempt
 router.post("/verify", (req, res, next) => {
+  console.log(req.body);
   passport.authenticate("passworless", (err, user, info) => {
     if (err) {
       return next(err);
@@ -30,7 +32,7 @@ router.post("/verify", (req, res, next) => {
       if (err) {
         return next(err);
       }
-      return res.redirect("/users");
+      return res.status(200).send({success: true});
     });
   })(req, res, next);
 });

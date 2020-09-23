@@ -1,4 +1,3 @@
-const dotenv = require("dotenv");
 const authy = require("authy")(process.env.TWILIO_API_KEY);
 const User = require("../models/User.js");
 
@@ -28,6 +27,7 @@ const sendUserVerify = (phone) => {
         // If the phone number is registered send verification
         authy.request_sms(user.userToken, function (err, res) {
           // Return the response (includes sms status and other info)
+          console.log(err)
           resolve(res);
         });
       }
@@ -36,11 +36,11 @@ const sendUserVerify = (phone) => {
 };
 
 // Check a verification code against a user
-const checkUserVerify = (userId, code) => {
+const checkUserVerify = (phone, code) => {
   // Return a Promise
   return new Promise((resolve, reject) => {
     // Find the user to get thier userToken which was setup during registration
-    User.findOne({ _id: userId }).then((user) => {
+    User.findOne({ phone: phone }).then((user) => {
       // Check with authy that the user provided the correct verification code
       authy.verify(user.userToken, token=code, function (err, res) {
         // Resolve any errors, the response and the user logingin
