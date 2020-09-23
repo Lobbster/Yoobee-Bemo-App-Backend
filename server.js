@@ -5,6 +5,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const session = require("express-session");
+const MongoStore = require('connect-mongo')(session);
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
 app.io = io;
@@ -26,15 +27,24 @@ const isProduction = false;
 // Passport Config
 require("./utils/passport.js")(passport);
 
+// Mongoose Connection ------------------------------------
+
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+});
+
 // Express Session ------------------------------------------
 const userSession = session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
 });
+
 const initPassport = passport.initialize();
 const initpassportSession = passport.session();
-
 app.use(userSession);
 
 // Passport middleware
@@ -43,14 +53,6 @@ app.use(initpassportSession);
 io.use(wrap(userSession));
 io.use(wrap(initPassport));
 io.use(wrap(initpassportSession));
-
-// Mongoose Connection ------------------------------------
-
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-});
 
 // Socket -------------------------------------------------
 
