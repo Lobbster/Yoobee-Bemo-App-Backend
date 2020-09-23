@@ -1,6 +1,3 @@
-const Channel = require("../models/Channel");
-const mongoose = require("mongoose")
-
 const init = async (socket) => {
     const chatsPayload = {};
 
@@ -9,7 +6,7 @@ const init = async (socket) => {
 
         for (id in socket.request.user.channels) {
             chatsPayload[socket.request.user.channels[id]._id] = {
-                latestMsg: socket.request.user.channels[id].messages,
+                latestMsg: socket.request.user.channels[id].messages[0],
                 members: socket.request.user.channels[id].members
             }
         }
