@@ -36,7 +36,6 @@ const updateChannel = (socket, channel) => {
  */
 
 const updateCurrentUsers = (io, sockets, channel) => {
-  console.log(channel)
   sockets.forEach(socket => {
     io.to(socket.socketId).emit('updateChannel', {
       id: channel._id,
