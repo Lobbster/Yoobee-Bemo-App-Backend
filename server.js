@@ -40,7 +40,10 @@ const userSession = session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  store: new MongoStore({ mongooseConnection: mongoose.connection })
+  store: new MongoStore({ 
+    mongooseConnection: mongoose.connection,
+
+  })
 });
 
 const initPassport = passport.initialize();
@@ -56,13 +59,13 @@ io.use(wrap(initpassportSession));
 
 // Socket -------------------------------------------------
 
-// io.use((socket, next) => {
-//   if (socket.request.user) {
-//     next();
-//   } else {
-//     next(new Error('unauthorized'));
-//   }
-// });
+io.use((socket, next) => {
+  if (socket.request.user) {
+    next();
+  } else {
+    next(new Error('unauthorized'));
+  }
+});
 
 
 // Routes -------------------------------------------------

@@ -41,6 +41,28 @@ const socket = (io) => {
     });
 
     /**
+     * Listen for a socket joinChanel event
+     *
+     * @param { String } channel - The channel id
+     */
+    // When someone joins the room
+    socket.on("joinChannel", (channel) => {
+      console.log("User Joined " + channel)
+      socket.join(channel);
+    });
+
+    /**
+     * Listen for a socket leaveChannel event
+     *
+     * @param { String } channel - The channel id
+     */
+    // When someone joins the room
+    socket.on("leaveChannel", (channel) => {
+      console.log("User Left " + channel);
+      socket.leave(channel);
+    });
+
+    /**
      * When a user disconnects from socket
      */
 

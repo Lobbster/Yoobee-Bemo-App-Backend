@@ -14,7 +14,6 @@ const getConnections = (ids) => {
     let connections = [];
 
     ids.forEach(user => {
-        console.log(user)
         if(socketConnections[user]){
             connections.push(socketConnections[user]);
         }
