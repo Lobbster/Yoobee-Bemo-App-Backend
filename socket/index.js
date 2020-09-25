@@ -2,7 +2,7 @@
 
 const { init } = require("./init.js");
 const { createChannel } = require("./channel.js");
-const { newMessage } = require("./chat.js");
+const { sendMessage, initChat } = require("./chat.js");
 
 const {
   newConnection,
@@ -36,8 +36,8 @@ const socket = (io) => {
      * @typedef {{ channel: objectId, content: string, contentType: string}}
      */
 
-    socket.on("chatMessage", (request) => {
-      newMessage(socket, request);
+    socket.on("sendMessage", (request) => {
+      sendMessage(socket, request);
     });
 
     /**
@@ -49,6 +49,7 @@ const socket = (io) => {
     socket.on("joinChannel", (channel) => {
       console.log("User Joined " + channel)
       socket.join(channel);
+      // initChat(io, channel)
     });
 
     /**
