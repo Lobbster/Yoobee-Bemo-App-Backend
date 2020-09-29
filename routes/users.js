@@ -31,10 +31,16 @@ router.get("/", (req, res, next) => {
 // ----------------------------------------------------------------
 // MOVED TO AUTH / SIGNUP
 
-//Post Request
+// Post Request
 // router.post("/", (req, res) => {
 //   const user = new User(req.body);
 //   user.save().then((result) => {
+//     return res.status(201).send(result);
+//   });
+// });
+
+// router.post("/transaction", (req, res) => {
+//   transferFunds(req.body.amount, req.body.destination).then((result) => {
 //     return res.status(201).send(result);
 //   });
 // });
