@@ -40,7 +40,10 @@ const userSession = session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  store: new MongoStore({ mongooseConnection: mongoose.connection })
+  store: new MongoStore({ 
+    mongooseConnection: mongoose.connection,
+
+  })
 });
 
 const initPassport = passport.initialize();
@@ -56,13 +59,13 @@ io.use(wrap(initpassportSession));
 
 // Socket -------------------------------------------------
 
-// io.use((socket, next) => {
-//   if (socket.request.user) {
-//     next();
-//   } else {
-//     next(new Error('unauthorized'));
-//   }
-// });
+io.use((socket, next) => {
+  if (socket.request.user) {
+    next();
+  } else {
+    next(new Error('unauthorized'));
+  }
+});
 
 
 // Routes -------------------------------------------------
@@ -80,7 +83,6 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');    
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');   
   res.setHeader('Access-Control-Allow-Credentials', 'true');   
-  console.log(req.method + " request just came in...");
   next();
 });
 // --------------------------------------------------------
