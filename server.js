@@ -10,8 +10,9 @@ const io = require("socket.io")(http);
 app.io = io;
 
 require("./utils/chat/socket.js")(io);
+const firebase = require("./utils/firebase.js");
 
-
+console.log(firebase);
 
 
 // App Setup  ---------------------------------------------
