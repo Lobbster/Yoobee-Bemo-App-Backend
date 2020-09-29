@@ -1,29 +1,36 @@
-let socketConnections = [];
+let socketConnections = {};
 
 const newConnection = (socket, user) => {
-    socketConnections[user] = {
-        socketId: socket
-    }
-}
+  socketConnections[user._id] = {
+    socketId: socket,
+    username: user.username,
+    img: user.picture,
+  };
+};
 
 const destroyConnection = (socket) => {
-    delete socketConnections[socket];
-}
+  delete socketConnections[socket];
+};
 
 const getConnections = (ids) => {
-    let connections = [];
+  let connections = [];
 
-    ids.forEach(user => {
-        if(socketConnections[user]){
-            connections.push(socketConnections[user]);
-        }
-    });
+  ids.forEach((user) => {
+    if (socketConnections[user]) {
+      connections.push(socketConnections[user]);
+    }
+  });
 
-    return connections;
-}
+  return connections;
+};
+
+const getUsers = () => {
+  return socketConnections;
+};
 
 module.exports = {
-    newConnection,
-    destroyConnection,
-    getConnections
-}
+  newConnection,
+  destroyConnection,
+  getConnections,
+  getUsers,
+};
