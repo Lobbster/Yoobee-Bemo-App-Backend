@@ -15,13 +15,11 @@ const ChannelSchema = new mongoose.Schema({
         content: { type: Object, required: true },
         contentType: {
             type: String,
-            enum: ["PAYMENT", "MESSAGE", "GIF"],
-            required: true
+            enum: ["PAYMENT", "TEXT/PLAIN", "GIF"],
         },
         author: {
             type: mongoose.Types.ObjectId,
             ref: "User",
-            required: true
         }
     }]
 },
