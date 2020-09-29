@@ -30,6 +30,11 @@ const initChat = async (io, channelId) => {
   io.to(channelId).emit("initChat", channel.messages);
 };
 
+const initChat = async (io, channelId) => {
+  const channel = await Channel.findOne(channelId)
+  io.to(channelId).emit('initChat', { channel: channelId, messages: channel.messages })
+}
+
 module.exports = {
   newMessage,
   initChat
