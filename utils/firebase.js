@@ -1,7 +1,10 @@
 const admin = require("firebase-admin");
+const serviceAccount = require("../serviceAccountKey.json");
+
+
+let bucket;
 
 const init = () => {
-    const serviceAccount = require("../serviceAccountKey.json");
     const firebaseConfig = {
         credential: admin.credential.cert(serviceAccount),
         apiKey: process.env.FIREBASE_API_KEY,
@@ -10,12 +13,15 @@ const init = () => {
         appId: process.env.FIREBASE_APP_ID
     };
     admin.initializeApp(firebaseConfig);
-    
-    const bucket = admin.storage().bucket();
-    
-    console.log(bucket);    
+
+    bucket = admin.storage().bucket();
+}
+
+const getBucket = () => {
+    return bucket;    
 }
 
 module.exports = {
+    getBucket,
     init
 };
