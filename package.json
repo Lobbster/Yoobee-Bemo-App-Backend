@@ -27,6 +27,7 @@
     "express-fileupload": "^1.2.0",
     "express-session": "^1.17.1",
     "firebase-admin": "^9.2.0",
+    "imagemin": "^7.0.1",
     "mongoose": "^5.10.4",
     "passport": "^0.4.1",
     "passport-custom": "^1.1.1",
