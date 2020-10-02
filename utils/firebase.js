@@ -18,10 +18,56 @@ const init = () => {
 }
 
 const getBucket = () => {
-    return bucket;    
+    return bucket;
 }
+
+const upload = (user, file) => {
+    const bucket2 = getBucket();
+
+    const fileName = `${user._id}/PFP-${new Date().getTime()}.jpg`;
+
+    const file2 = bucket2.file(fileName); // NAME THE FILE
+    const stream = file2.createWriteStream();
+    stream.write(file.data);
+    stream.end();
+}
+
+const getPhoto = async (fileName) => {
+
+    const file = await bucket.file(fileName);
+
+    return new Promise((resolve, reject) => {
+        if (file.exists()) {
+            // FILE EXISTS!
+            file.download({}).then((data) => {
+                const contents = data[0];  // contents is the file as Buffer
+                console.log(contents);
+                resolve(JSON.stringify(contents))
+                // resolve("SUCCESS")
+            })
+            .catch((err) => {
+                let error = {
+                    status: err.response.statusCode,
+                    msg: err.response.statusMessage
+                };
+                reject(error);
+            });
+        } else {
+            const err = {
+                msg: "Not Found",
+                status: 404
+            }
+            reject(err);
+        }
+    });
+
+
+}
+
 
 module.exports = {
     getBucket,
-    init
+    init,
+    upload,
+    getPhoto
 };
