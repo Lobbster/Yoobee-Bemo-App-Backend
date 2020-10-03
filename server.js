@@ -8,6 +8,8 @@ const session = require("express-session");
 const MongoStore = require('connect-mongo')(session);
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
+const fileUpload = require('express-fileupload');
+const firebase = require("./utils/firebase.js");
 app.io = io;
 const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
 
@@ -22,10 +24,18 @@ app.use(cors({
   origin: 'http://localhost:8080',
   credentials : true
  }));
+app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload());
 dotenv.config();
 const isProduction = false;
 // Passport Config
 require("./utils/passport.js")(passport);
+
+
+// Initialise Firebase ------------------------------------
+
+firebase.init();
+
 
 // Mongoose Connection ------------------------------------
 
@@ -56,6 +66,7 @@ app.use(initpassportSession);
 io.use(wrap(userSession));
 io.use(wrap(initPassport));
 io.use(wrap(initpassportSession));
+
 
 // Socket -------------------------------------------------
 
