@@ -1,6 +1,6 @@
 const { ensureAuthenticated } = require("../../utils/auth");
 const firebase = require("../../utils/firebase");
-const { uploadProfilePic } = require("../../utils/profilePhotos");
+const { uploadProfilePic, getProfilePic } = require("../../utils/profilePhotos");
 
 const router = require("express").Router();
 
@@ -33,20 +33,26 @@ router.post("/", ensureAuthenticated, (req, res, next) => {
 });
 
 // Get profile photo
-router.get("/:profilePhoto", (req, res, next) => {
-    firebase.getPhoto("5f73b5c85af4eb7af4464b9d/" + req.params.profilePhoto)
+router.get("/:userId", (req, res, next) => {
+    getProfilePic(req.params.userId)
         .then((contents) => {
-            const img = Buffer.from(contents.split(",")[1], 'base64');
-            
-            res.writeHead(200, {
-               'Content-Type': 'image/jpg',
-               'Content-Length': img.length
-            });
-            
-            res.end(img); 
+            if (!contents.status) {
+                const img = Buffer.from(contents.split(",")[1], 'base64');
+                res.writeHead(200, {
+                    'Content-Type': 'image/jpg',
+                    'Content-Length': img.length
+                });
+    
+                res.end(img);
+            } else {
+                return res.send(contents.msg).status(contents.status);
+            }
         })
         .catch((err) => {
-            return res.send(err.msg).status(err.status);
+            if (err.msg && err.status) {
+                return res.send(err.msg).status(err.status);
+            }
+            return res.send("Error getting profile picture").status(500);
         });
 })
 
