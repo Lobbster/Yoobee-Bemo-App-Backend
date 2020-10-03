@@ -1,5 +1,6 @@
 const { ensureAuthenticated } = require("../../utils/auth");
 const firebase = require("../../utils/firebase");
+const { uploadProfilePic } = require("../../utils/profilePhotos");
 
 const router = require("express").Router();
 
@@ -16,7 +17,7 @@ router.use("/", (req, res, next) => {
 router.post("/", ensureAuthenticated, (req, res, next) => {
     if (req.files) {
         if (req.files.photo) {
-            firebase.upload(req.user, req.files.photo)
+            uploadProfilePic(req.user, req.files.photo)
                 .then((file) => {
                     return res.json(file).status(201);
                 })

@@ -1,19 +1,12 @@
 const admin = require("firebase-admin");
 const serviceAccount = require("../serviceAccountKey.json");
 
-const imagemin = require('imagemin');
-
-const imageminJpegtran = require('imagemin-jpegtran');
-const imageminPngquant = require('imagemin-pngquant');
-const sharp = require('sharp');
-
 
 let bucket;
 
 /**
  * Initalise firebase, setting variables based off env,
  * Get the bucket for storing images
- * 
  */
 const init = () => {
     const firebaseConfig = {
@@ -38,59 +31,17 @@ const getBucket = () => {
 }
 
 /**
- * Upload a file based off a user and a provided file
+ * Upload a file to Google Cloud Storage
  * 
- * @param {Object} user - A Bemo app user object 
- * @param {Object} file - A Google Cloud Storage file object
+ * @param {Object} path - Where should the file be stored and what with what file extension
+ * @example "photos/myPhoto.jpg"
+ * @param {Object} buffer - A file buffer
  */
-const upload = (user, file) => {
-
-    // Convert mimetype to extension
-    // List also acts as a valid file extension filter
-    const mimetypeExtensions = {
-        'image/png': 'png',
-        'image/jpeg': 'jpg',
-    }
-
-    return new Promise((resolve, reject) => {
-
-        if (mimetypeExtensions[file.mimetype]) {
-            const fileName = `${user._id}/PFP-${new Date().getTime()}.${mimetypeExtensions[file.mimetype]}`;
-            // console.log(file.data);
-            sharp(file.data)
-                .rotate()
-                .resize(500, 500) // Resize
-                .toBuffer()
-                .then((data) => {
-
-                    imagemin.buffer(data, {
-                        plugins: [
-                            imageminJpegtran(),
-                            imageminPngquant(),
-                        ]
-                    }).then((compressedFile) => {
-                        const cloudFile = getBucket().file(fileName); // NAME THE FILE
-                        const stream = cloudFile.createWriteStream();
-                        stream.write(compressedFile);
-                        stream.end();
-                        resolve(compressedFile);
-                    }).catch((err) => {
-                        console.log(err);
-                        err.message = err;
-                        err.status = 500;
-                        reject(err);
-                    });
-
-                    
-                })
-                .catch((err) => {
-                    console.log(err);
-                    err.message = err;
-                    err.status = 500;
-                    reject(err);
-                })
-        }
-    });
+const upload = (path, buffer) => {
+    const cloudFile = getBucket().file(path);
+    const stream = cloudFile.createWriteStream();
+    stream.write(buffer);
+    stream.end();
 }
 
 
@@ -148,8 +99,8 @@ const getPhoto = async (fileName) => {
 
 
 module.exports = {
+    upload,
     getBucket,
     init,
-    upload,
     getPhoto
 };
