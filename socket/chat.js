@@ -16,26 +16,29 @@ const newMessage = async (io, socket, request) => {
   // Add current user to message object
   let message = request.message;
   message.author = socket.request.user._id;
+  message.createdAt = Date.now();
 
   // Save to database for current channel
   channel.messages.push(message);
-  await channel.save();
+  await channel.save()
 
-  io.to(request.channel).emit("receiveMsg", message);
+  io.to(request.channel).emit("receiveMsg", {
+    msg: message,
+    length: channel.messages.length
+  });
   updateChannel(io, socket, request.channel);
 };
 
-const initChat = async (io, channelId) => {
-  const channel = await Channel.findById(channelId);
-  io.to(channelId).emit("initChat", channel.messages);
-};
-
-const initChat = async (io, channelId) => {
-  const channel = await Channel.findOne(channelId)
-  io.to(channelId).emit('initChat', { channel: channelId, messages: channel.messages })
-}
+const getMsgs = async (io, options) => {
+  const channel = await Channel.findById(options.channelId);
+  const msgSum = await channel.messages.length
+  const messages = channel.messages.splice(- options.num -20 , 20).reverse();
+  io.to(options.channelId).emit("reciveMsgs", {
+    msgs: messages, 
+    length: msgSum
+})};
 
 module.exports = {
   newMessage,
-  initChat
+  getMsgs
 };
