@@ -1,8 +1,8 @@
 // Socket.io
-
+const Channel = require("../models/Channel.js");
 const { init } = require("./init.js");
 const { createChannel } = require("./channel.js");
-const { newMessage, initChat } = require("./chat.js");
+const { newMessage, getMsgs } = require("./chat.js");
 
 const {
   newConnection,
@@ -23,7 +23,6 @@ const socket = (io) => {
     init(socket);
 
     socket.on("init", () => {
-      console.log("bee")
       init(socket);
     });
 
@@ -55,11 +54,20 @@ const socket = (io) => {
      * @param { String } channel - The channel id
      */
 
-    socket.on("joinChannel", (channel) => {
-      // console.log("User Joined " + channel);
-      socket.join(channel);
-      initChat(io, channel);
+    socket.on("joinChannel", async (channelId) => {
+      socket.join(channelId);
+
+      const channel = await Channel.findById(channelId);
+
+      io.emit("updateChannel", {
+        _id: channel._id,
+        length: channel.messages.length
+      });
     });
+
+    socket.on("getMsgs", (options) => {
+      getMsgs(io, options);
+    })
 
     /**
      * Listen for a socket leaveChannel event
