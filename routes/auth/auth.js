@@ -5,7 +5,7 @@ const loginRoute = require("./login.js")
 router.use("/login", loginRoute);
 
 // Signup ----------------------------------------------------
-const signupRoute = require("./signup.js")
+const signupRoute = require("./signUp.js")
 router.use("/signup", signupRoute);
 
 // Logout ----------------------------------------------------
