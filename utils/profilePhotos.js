@@ -33,18 +33,21 @@ const uploadProfilePic = (user, file) => {
                                 .then((data) => { resolve(compressedFile) })
                                 .catch((err) => { reject(err) });
                         }).catch((err) => {
-                            console.log(err);
                             err.msg = err;
                             err.status = 500;
                             reject(err);
                         });
                 })
                 .catch((err) => {
-                    console.log(err);
                     err.msg = err;
                     err.status = 500;
                     reject(err);
                 })
+        } else {
+            reject({
+                msg: "Invalid file type",
+                status: 422
+            });
         }
     });
 }
@@ -103,7 +106,6 @@ const getProfilePic = (userId) => {
                         resolve({ status: 404, msg: "User not found" });
                     }
                 } else {
-                    console.log("REJ");
                     reject(err);
                 }
             }

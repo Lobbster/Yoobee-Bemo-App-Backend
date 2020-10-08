@@ -62,7 +62,6 @@ const getPhoto = async (fileName) => {
             file.download({})
                 .then((data) => {
                     const contents = data[0];  // contents is the file as Buffer
-                    console.log(contents);
 
                     let buff = Buffer.from(contents, 'base64');
                     let base64data = buff.toString('base64');

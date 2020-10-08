@@ -19,16 +19,17 @@ router.post("/", ensureAuthenticated, (req, res, next) => {
         if (req.files.photo) {
             uploadProfilePic(req.user, req.files.photo)
                 .then((file) => {
-                    return res.json(file).status(201);
+                    return res.status(201).json(file);
                 })
                 .catch((err) => {
-                    return res.send(err.msg).status(err.status);
+                    console.log(err);
+                    return res.status(err.status).send(err.msg);
                 });
         } else {
-            return res.send("Missing file").status(400);
+            return res.status(400).send("Missing file");
         }
     } else {
-        return res.send("Missing file").status(400);
+        return res.status(400).send("Missing file");
     }
 });
 
@@ -42,7 +43,6 @@ router.get("/:userId", (req, res, next) => {
                     'Content-Type': 'image/jpg',
                     'Content-Length': img.length
                 });
-    
                 res.end(img);
             } else {
                 return res.send(contents.msg).status(contents.status);
