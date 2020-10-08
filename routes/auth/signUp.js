@@ -14,19 +14,21 @@ router.post("/", (req, res) => {
   let newUser = req.body;
 
   // Run the twilio Register User utility then => add the users authy token to thier object
-  registerUser(req.body.email, req.body.phone).then((authyRes) => {
-    newUser["userToken"] = authyRes.user.id;
+  registerUser("", req.body.phone)
+    .then((authyRes) => {
+      newUser["userToken"] = authyRes.user.id;
 
-    // Save into the database a new user
-    const user = new User(newUser);
-    user.save().then((result) => {
-      // If sucess return the new user object
-      return res.status(201).send(result);
+      // Save into the database a new user
+      const user = new User(newUser);
+      user.save().then((result) => {
+        // If sucess return the new user object
+        return res.status(201).send(result);
+      });
+    })
+    .catch((error) => {
+      // If error return the error object
+      return res.status(400).send(error);
     });
-  }).catch((error) => {
-    // If error return the error object
-    return res.status(400).send(error)
-  });
 });
 
 module.exports = router;
